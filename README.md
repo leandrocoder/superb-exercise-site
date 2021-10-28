@@ -1,2 +1,19 @@
-# superb-exercise-site
-Site for the restaurant's customers to be able to book a table for x people.
+# site
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
