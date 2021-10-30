@@ -4,6 +4,9 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 
+import rest from './scripts/rest'
+Vue.prototype.$rest = rest
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -34,11 +34,18 @@
 			<v-text-field label="Name" v-model="form.name"></v-text-field>
 			<v-text-field label="Phone Number" v-model="form.phone"></v-text-field>
 			<v-text-field label="Number of chairs" v-model="form.chairs"></v-text-field>
-			<v-text-field label="Date" v-model="form.date"></v-text-field>
-			<p>Available Hours</p>
-			<diV class="d-flex justify-center flex-wrap">
-				<div :class="{'hourbox':true, 'hourboxactive':form.hour==h}" v-for="h in hours" :key="h" @click="form.hour=h">{{h}}</div>
-			</diV>
+			<v-text-field label="Date" v-model="form.date" @blur="searchAvailableHours"></v-text-field>
+			<v-progress-circular
+				v-if="loadingHours"
+				indeterminate
+				color="primary"
+			></v-progress-circular>
+			<div v-else>
+				<p>Available Hours</p>
+				<diV class="d-flex justify-center flex-wrap">
+					<div :class="{'hourbox':true, 'hourboxactive':form.hour==h.time, 'hourboxdisabled': h.tables <= 0}" v-for="h in hours" :key="h.time" @click="form.hour=h.time">{{h.time}}</div>
+				</diV>
+			</div>
         </v-card-text>
 		<v-card-actions class="mt-6">
 			<v-spacer />
@@ -58,6 +65,8 @@
 export default {
   name: 'Form',
   data: () =>({
+	  loading: true,
+	  loadingHours: false,
       form: {
           name: "",
           phone: "",
@@ -70,7 +79,6 @@ export default {
 
 	mounted() {
 		this.$store.commit('booking', null)
-		this.form.date = (new Date()).toJSON().slice(0, 10).split`-`.join`/`;
 	},
 
 	computed: {
@@ -79,7 +87,7 @@ export default {
 			if (this.form.phone.trim().length == 0) return false
 			let chairs = parseInt(this.form.chairs)
 			if (isNaN(chairs) || chairs < 1) return false
-			if (this.form.date.trim().length == 0) return false
+			if (!this.form.date || this.form.date.trim().length == 0) return false
 			if (!this.form.hour) return false
 			return true
 		}
@@ -96,6 +104,7 @@ export default {
 		},
 
 		async submitData() {
+			await this.$rest.post('/booking', this.form)
 			this.$store.commit('booking', this.form)
 		},
 
@@ -105,13 +114,9 @@ export default {
 		},
 
 		async searchAvailableHours() {
-			console.log('find hours')
 			this.form.hour = null
-			// Find tables based on date
-			for (let i = 0; i < 10; i++) {
-				let t = ((i < 9) ? `0${i}` : i) + ':00'
-				this.hours.push(t)
-			}
+			let res = await this.$rest.get(`/hours/${this.form.date}`)
+			this.hours = res
 		}
 	},
 
@@ -142,6 +147,13 @@ export default {
 .hourboxactive {
 	background-color: #1976d2;
 	border: 1px solid #1976d2;
+	color: #fff;
+}
+
+.hourboxdisabled {
+	pointer-events: none;
+	background-color: #aaa;
+	border: 1px solid #aaa;
 	color: #fff;
 }
 </style>
