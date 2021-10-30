@@ -1,3 +1,4 @@
+<!--
 <template>
   <div class="form">
     <h1>Restaurant</h1>
@@ -21,6 +22,37 @@
 
   </div>
 </template>
+-->
+
+<template>
+  <div class="page">
+    <div class="maincontent">
+      <div style="height:700px; margin-top:4rem">
+        <h1>RESTAURANT</h1>
+        <h4>Booking</h4>
+        <v-card-text class="form">
+			<v-text-field label="Name" v-model="form.name"></v-text-field>
+			<v-text-field label="Phone Number" v-model="form.phone"></v-text-field>
+			<v-text-field label="Number of chairs" v-model="form.chairs"></v-text-field>
+			<v-text-field label="Date" v-model="form.date"></v-text-field>
+			<p>Available Hours</p>
+			<diV class="d-flex justify-center flex-wrap">
+				<div :class="{'hourbox':true, 'hourboxactive':form.hour==h}" v-for="h in hours" :key="h" @click="form.hour=h">{{h}}</div>
+			</diV>
+        </v-card-text>
+		<v-card-actions class="mt-6">
+			<v-spacer />
+			<v-btn to="/">Cancel</v-btn>
+			<v-btn color="primary" @click="onClickSave" :disabled="!canSubmit">Apply</v-btn>
+		</v-card-actions>
+      </div>
+    </div>
+    <v-spacer />
+    <div class="footer">
+      <p>Made by Leandro Carlos</p>
+    </div>
+  </div>
+</template>
 
 <script>
 export default {
@@ -29,11 +61,11 @@ export default {
       form: {
           name: "",
           phone: "",
-          people: 1,
+          chairs: 1,
           date: null,
           hour: null
       },
-	  availableHours: []
+	  hours: []
   }),
 
 	mounted() {
@@ -45,8 +77,8 @@ export default {
 		canSubmit() {
 			if (this.form.name.trim().length == 0) return false
 			if (this.form.phone.trim().length == 0) return false
-			let people = parseInt(this.form.people)
-			if (isNaN(people) || people < 1) return false
+			let chairs = parseInt(this.form.chairs)
+			if (isNaN(chairs) || chairs < 1) return false
 			if (this.form.date.trim().length == 0) return false
 			if (!this.form.hour) return false
 			return true
@@ -76,9 +108,10 @@ export default {
 			console.log('find hours')
 			this.form.hour = null
 			// Find tables based on date
-			this.availableHours = [
-				'12:00', '13:00', '14:00', '16:00'
-			]
+			for (let i = 0; i < 10; i++) {
+				let t = ((i < 9) ? `0${i}` : i) + ':00'
+				this.hours.push(t)
+			}
 		}
 	},
 
@@ -88,3 +121,27 @@ export default {
 	}
 }
 </script>
+
+<style lang="scss" scoped>
+
+.maincontent {
+	height: 800px !important;
+}
+
+.form {
+	width: 700px;
+	max-width: calc(100vw - 4rem);
+}
+.hourbox {
+	cursor: pointer;
+	padding: 0.25rem 0.5rem;
+	margin: 0.5rem;
+	border: 1px solid #ccc;
+}
+
+.hourboxactive {
+	background-color: #1976d2;
+	border: 1px solid #1976d2;
+	color: #fff;
+}
+</style>

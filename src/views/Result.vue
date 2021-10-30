@@ -1,9 +1,16 @@
 <template>
-  <div class="home">
-    <h1>Restaurant</h1>
-    <h3>Booking</h3>
-    <p>Your reservation are successful schedule to {{dayName}} {{date}} at {{hour}}</p>
-    <button @click="$router.push('/')">Back to home page</button>
+  <div class="page">
+    <div class="maincontent">
+      <div>
+        <h1>RESTAURANT</h1>
+        <p class="mt-6">Your reservation are successful schedule to {{dayName}} {{date}} at {{hour}}</p>
+        <v-btn to="/">Back to home</v-btn>
+      </div>
+    </div>
+    <v-spacer />
+    <div class="footer">
+      <p>Made by Leandro Carlos</p>
+    </div>
   </div>
 </template>
 
@@ -11,11 +18,9 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'Home',
-  beforeMount() {
-      //if (this.$store.booking == null) this.$router.push('/')
-  },
   computed: {
       ...mapGetters(['day', 'dayName', 'date', 'hour']),
   }
 }
 </script>
+
