@@ -1,4 +1,5 @@
-const HOST = "http://localhost:3000"
+//const HOST = "http://localhost:3000"
+const HOST = `http://${window.location.hostname}:3000`
 
 async function get(path) {
     return new Promise(res => {

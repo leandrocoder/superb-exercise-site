@@ -104,7 +104,7 @@ export default {
 		},
 
 		async submitData() {
-			await this.$rest.post('/booking', this.form)
+			await this.$rest.post('/queue', this.form)
 			this.$store.commit('booking', this.form)
 		},
 
