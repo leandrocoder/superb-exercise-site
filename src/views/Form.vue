@@ -1,40 +1,15 @@
-<!--
-<template>
-  <div class="form">
-    <h1>Restaurant</h1>
-    <h3>Booking</h3>
-
-	<p>{{form}}</p>
-
-    <div>
-        <input v-model="form.name" placeholder="Name"></input><br>
-        <input v-model="form.phone" placeholder="Phone number"></input><br>
-        <input v-model="form.people" type="number" placeholder="Number of people"></input><br>
-        <input v-model="form.date" placeholder="Date"></input><br>
-    </div>
-
-	<diV>
-		<button v-for="h in availableHours" :key="h" @click="form.hour=h" :style="form.hour==h ? 'border-style:inset;' : ''">{{h}}</button>
-	</diV>
-
-    <button @click="onClickCancel">Cancel</button>
-    <button @click="onClickSave" :disabled="!canSubmit">Apply</button>
-
-  </div>
-</template>
--->
-
 <template>
   <div class="page">
     <div class="maincontent">
       <div style="height:700px; margin-top:4rem">
         <h1>RESTAURANT</h1>
         <h4>Booking</h4>
-        <v-card-text class="form">
+        <v-card-text class="form" :loading="loading">
 			<v-text-field label="Name" v-model="form.name"></v-text-field>
 			<v-text-field label="Phone Number" v-model="form.phone"></v-text-field>
 			<v-text-field label="Number of chairs" v-model="form.chairs"></v-text-field>
-			<v-text-field label="Date" v-model="form.date" @blur="searchAvailableHours"></v-text-field>
+			<!-- <v-text-field label="Date" v-model="form.date" @blur="searchAvailableHours"></v-text-field> -->
+			<date-picker label="Date" :openDays="settings.openDays" v-model="form.date" @change="searchAvailableHours"></date-picker>
 			<v-progress-circular
 				v-if="loadingHours"
 				indeterminate
@@ -47,7 +22,7 @@
 				</diV>
 			</div>
         </v-card-text>
-		<v-card-actions class="mt-6">
+		<v-card-actions class="mt-6"  v-if="!loading">
 			<v-spacer />
 			<v-btn to="/">Cancel</v-btn>
 			<v-btn color="primary" @click="onClickSave" :disabled="!canSubmit">Apply</v-btn>
@@ -62,11 +37,14 @@
 </template>
 
 <script>
+
+import DatePicker from '../components/DatePicker.vue'
 export default {
   name: 'Form',
   data: () =>({
 	  loading: true,
 	  loadingHours: false,
+	  settings: {},
       form: {
           name: "",
           phone: "",
@@ -77,8 +55,13 @@ export default {
 	  hours: []
   }),
 
-	mounted() {
+	components: { DatePicker },
+
+	async mounted() {
 		this.$store.commit('booking', null)
+		await this.loadSettings()
+		await this.searchAvailableHours()
+		this.loading = false
 	},
 
 	computed: {
@@ -95,12 +78,12 @@ export default {
 
 	methods: {
 
-		onClickCancel() {
-			this.$router.push('/')
+		async loadSettings() {
+			this.settings = await this.$rest.get('/settings')
 		},
 
-		onSelectHour(e) {
-			console.log(e.target)
+		onClickCancel() {
+			this.$router.push('/')
 		},
 
 		async submitData() {
@@ -122,7 +105,6 @@ export default {
 
 	watch: {
 		'form.date'(val) { this.searchAvailableHours() }
-		//form: { handler(val) { this.onFormChanged() }, deep: true }
 	}
 }
 </script>

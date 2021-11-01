@@ -16,7 +16,6 @@ export default new Vuex.Store({
     day:state => new Date(state.booking.date).getDate(),
     dayName(state) {
       let d = new Date(state.booking.date)
-      console.log(d.getDay())
       let names = [
         'Monday',
         'Tuesday', 
@@ -26,7 +25,7 @@ export default new Vuex.Store({
         'Saturday',
         'Sunday'
       ]
-      return names[d.getDay() - 1]
+      return names[d.getDay()]
     }
   },
   mutations: {
