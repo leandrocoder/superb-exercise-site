@@ -88,7 +88,6 @@ export default {
           return this.openDays[d.getDay()]
       } 
     }
-
 }
 </script>
 

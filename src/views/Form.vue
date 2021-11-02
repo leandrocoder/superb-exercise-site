@@ -9,17 +9,20 @@
 			<v-text-field label="Phone Number" v-model="form.phone"></v-text-field>
 			<v-text-field label="Number of chairs" v-model="form.chairs"></v-text-field>
 			<!-- <v-text-field label="Date" v-model="form.date" @blur="searchAvailableHours"></v-text-field> -->
-			<date-picker label="Date" :openDays="settings.openDays" v-model="form.date" @change="searchAvailableHours"></date-picker>
+			<date-picker label="Date" :openDays="openDays" v-model="form.date" @change="searchAvailableHours"></date-picker>
 			<v-progress-circular
 				v-if="loadingHours"
 				indeterminate
 				color="primary"
 			></v-progress-circular>
-			<div v-else>
+			<div v-else-if="hours && hours.length > 0">
 				<p>Available Hours</p>
 				<diV class="d-flex justify-center flex-wrap">
 					<div :class="{'hourbox':true, 'hourboxactive':form.hour==h.time, 'hourboxdisabled': h.tables <= 0}" v-for="h in hours" :key="h.time" @click="form.hour=h.time">{{h.time}}</div>
 				</diV>
+			</div>
+			<div v-else>
+				<p>No available hours for this date</p>
 			</div>
         </v-card-text>
 		<v-card-actions class="mt-6"  v-if="!loading">
@@ -44,7 +47,7 @@ export default {
   data: () =>({
 	  loading: true,
 	  loadingHours: false,
-	  settings: {},
+	  settings: null,
       form: {
           name: "",
           phone: "",
@@ -73,6 +76,10 @@ export default {
 			if (!this.form.date || this.form.date.trim().length == 0) return false
 			if (!this.form.hour) return false
 			return true
+		},
+
+		openDays() {
+			return this.settings ? this.settings.openDays : []
 		}
 	},
 
@@ -80,6 +87,7 @@ export default {
 
 		async loadSettings() {
 			this.settings = await this.$rest.get('/settings')
+			console.log('settings', this.settings)
 		},
 
 		onClickCancel() {

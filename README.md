@@ -1,11 +1,14 @@
 # SUPERB - Booking manager
+
+Looking for the backend server repository? [Click Here](https://github.com/leandrocoder/superb-exercise-server)
+
 ## Restaurant booking website
 
 The objective of this page is to able clients to find a table passing the number of chairs (people) and the wanted date. After that, the user applies your choice sending the request to a queue which will be processed by the backend server.
 
 - [Planing](#planing)
 - [Framework](#framework)
-- [Install](#install)
+- [Run and Build](#run-and-build)
 
 ## Planing
 
@@ -31,5 +34,20 @@ All the requests are made using the native fetch browser api.
 
 ## Install
 
-// Todo: Put here the prod url and docker instructions
+As a Vue.js application, to run use these commands:
+
+```
+npm i
+npm run dev
+```
+
+To build use:
+
+```
+npm i
+npm run build
+```
+
+For more instructions about Docker deployment in the AWS, go to [server`s documentation](https://github.com/leandrocoder/superb-exercise-server).
+
 
